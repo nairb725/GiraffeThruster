@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     private GameObject Jetpack;
     [SerializeField]
     private GameObject PressE;
+    public AudioSource audioSource;
 
     private float jetpackTimer = 0f;
     private float rechargeTimer = 0f;
@@ -59,6 +60,7 @@ public class PlayerController : MonoBehaviour
     {
         if (!isUsingJetpack)
         {
+            audioSource.Pause();
             rechargeTimer = Mathf.Min(rechargeTimer + Time.deltaTime, rechargeTime);
         }
 
@@ -67,6 +69,7 @@ public class PlayerController : MonoBehaviour
             isUsingJetpack = true;
             jetpackTimer = 0f;
             rechargeTimer = 0f;
+            audioSource.Play();
         }
 
         if (isUsingJetpack)
