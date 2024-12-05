@@ -29,4 +29,9 @@ public class Timer : MonoBehaviour
         float seconds = Mathf.FloorToInt(timeToDisplay % 60);
         timerText.text = string.Format("{0:00}:{1:00}", minutes, seconds);
     }
+
+    public float GetElapsedTime()
+    {
+        return elapsedTime;
+    }
 }
