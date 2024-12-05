@@ -1,49 +1,94 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public Rigidbody rb;
-    public Vector3 forceDirection;
-
     [SerializeField]
-    private float forceDuration;
-
+    private float jetpackForce = 10f;
     [SerializeField]
-    private float cooldownDuration;
+    private float jetpackDuration = 3f;
+    [SerializeField]
+    private float rechargeTime = 2f;
+    [SerializeField]
+    private float rotationSpeed = 200f;
+    [SerializeField]
+    private GameObject Jetpack;
+    [SerializeField]
+    private GameObject PressE;
 
-    private bool isGrounded = false;
-    private bool isCooldown = false;
+    private float jetpackTimer = 0f;
+    private float rechargeTimer = 0f;
+    private bool isUsingJetpack = false;
+    private bool canMove = false;
+    private int ePressCount = 0;
+
+    private Rigidbody rb;
 
     void Start()
     {
-        if (rb == null)
-            rb = GetComponent<Rigidbody>();
+        rb = GetComponent<Rigidbody>();
+        Jetpack.SetActive(false);
+        PressE.SetActive(true);
     }
 
     void Update()
     {
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
-
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded && !isCooldown)
+        if (canMove)
         {
-            ApplyForce();
+            HandleRotation();
+            HandleJetpack();
+        }
+
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            ePressCount++;
+
+            if (ePressCount == 6)
+            {
+                Jetpack.SetActive(true);
+            }
+
+            if (ePressCount >= 8)
+            {
+                canMove = true;
+                PressE.SetActive(false);
+            }
         }
     }
 
-    private void ApplyForce()
+    private void HandleJetpack()
     {
-        isCooldown = true;
-
-        float elapsedTime = 0f;
-
-        while (elapsedTime < forceDuration)
+        if (!isUsingJetpack)
         {
-            rb.AddForce(forceDirection, ForceMode.Impulse);
-            elapsedTime += Time.deltaTime;
+            rechargeTimer = Mathf.Min(rechargeTimer + Time.deltaTime, rechargeTime);
         }
-        isCooldown = false;
+
+        if (Input.GetKeyDown(KeyCode.Space) && rechargeTimer >= rechargeTime)
+        {
+            isUsingJetpack = true;
+            jetpackTimer = 0f;
+            rechargeTimer = 0f;
+        }
+
+        if (isUsingJetpack)
+        {
+            if (jetpackTimer < jetpackDuration)
+            {
+                rb.AddForce(transform.up * jetpackForce);
+                jetpackTimer += Time.deltaTime;
+            }
+            else
+            {
+                isUsingJetpack = false;
+            }
+        }
     }
 
+    private void HandleRotation()
+    {
+        float horizontalInput = Input.GetAxis("Horizontal");
+
+        float rotation = horizontalInput * rotationSpeed * Time.deltaTime;
+
+        transform.Rotate(-rotation, 0, 0);
+    }
 }

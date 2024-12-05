@@ -3,8 +3,8 @@ using TMPro;
 
 public class Timer : MonoBehaviour
 {
-    private float elapsedTime = 0f; // Temps écoulé
-    public TextMeshProUGUI timerText; // Référence au composant TextMeshPro
+    private float elapsedTime = 0f;
+    public TextMeshProUGUI timerText;
 
     private bool timerIsRunning = true;
 
