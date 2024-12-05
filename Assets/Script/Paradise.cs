@@ -1,9 +1,11 @@
 using UnityEngine;
+using UnityEngine.UI;
 using TMPro;
 
 public class Paradise : MonoBehaviour
 {
     public Timer timerScript;
+    public GameObject winText;
 
     void OnTriggerEnter(Collider other)
     {
@@ -15,6 +17,7 @@ public class Paradise : MonoBehaviour
 
     public void win()
     {
+        winText.SetActive(true);
         float currentTime = timerScript.GetElapsedTime();
 
         float bestTime = PlayerPrefs.GetFloat("BestTime", float.MaxValue);
